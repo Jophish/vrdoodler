@@ -112,7 +112,11 @@ function animate (){
 var Doodler = new VRDoodler();
 Doodler.init();
 
-//set up some basic function calls that occur on scpecific events
+		//set up some basic function calls that occur on scpecific events
+		//we bind each of these callbacks with Doodler (our local instance of VRDoodler)
+		//in order to maintain proper scoping when we execute the callback.
+		//If we did not do this, the callbacks would have the scope of window or document,
+		//and we would not be able to access object variables or methods.
 		window.addEventListener('resize', Doodler.onWindowResize.bind(Doodler), false);
 		document.addEventListener('mousedown', Doodler.onSketchMouseDown.bind(Doodler), false);
 		document.addEventListener( 'mousemove', Doodler.onDocumentMouseMove.bind(Doodler), false );
