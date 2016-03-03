@@ -1,56 +1,80 @@
-    
-//maybe there's some way to refactor this so we don't need this many global variables?
-//kind of overwhelming
 
-    var camera, scene, renderer,orbitcamera,light;
-    var geometry, material, mesh;
-    var controls;
- 	var context = null;
-	var currentPlane = 0;
-	var drawnline = [];
-	var container, canvas;
+VRDoodler = function() {
 
-	
-	var manager;
+	 constructor = ( function() {
+	 var camera, scene, renderer,orbitcamera,light;
+     var geometry, material, mesh;
+     var controls;
+ 	 context = null;
+	 currentPlane = 0;
+	 drawnline = [];
+	 var container, canvas;
+
+	 var manager;
 
 
-	var MAX_POINTS = 800;
-	var countVertices = 0;
-	var sketchContainer,objContainer ;
-	var CURRENTspline = -1; //incremented at initNewLine
-	var raycaster, parentTransform, planeLockInd, lineLockInd, planeLockOutline, grid ;
-	var mouse = new THREE.Vector2();
-	var currentIntersected, currentIntersectedPoint, lastIntersected, lastIntersectedPoint;
-	var currentMouseRay;
+	 MAX_POINTS = 800;
+	 countVertices = 0;
+	 var sketchContainer,objContainer ;
+	 CURRENTspline = -1; //incremented at initNewLine
+	 var raycaster, parentTransform, planeLockInd, lineLockInd, planeLockOutline, grid ;
+	 mouse = new THREE.Vector2();
+	 var currentIntersected, currentIntersectedPoint, lastIntersected, lastIntersectedPoint;
+	 var currentMouseRay;
 	
-	var bIsDrawing = false;
-	var bShowInfo = true;
+	 bIsDrawing = false;
+	 bShowInfo = true;
 	
-	var ORBITMODE = 0;  //when not drawing
-	var FREEHANDMODE = 1;  //when drawing
-	var SNAPMODE = 0;		//snap to pre-existing line/objects	
-	var DRAWMODE = ORBITMODE;
-	var CURRENTLINEWIDTH = 2;
-	var PLANEROTATELOCK = 0;
-	var CAMERAPLANELOCK = 0;
+	 ORBITMODE = 0;  //when not drawing
+	 FREEHANDMODE = 1;  //when drawing
+	 SNAPMODE = 0;		//snap to pre-existing line/objects	
+	 DRAWMODE = ORBITMODE;
+	 CURRENTLINEWIDTH = 2;
+	 PLANEROTATELOCK = 0;
+	 CAMERAPLANELOCK = 0;
 	
-		var SNAPPINGTOGRID = 0;
+		 SNAPPINGTOGRID = 0;
 	
-	var cameraAngle = 0;
-	var orbitRange = 5;
-	var orbitSpeed = 2 * Math.PI/4;
-	var desiredAngle = 90 * Math.PI/180;
-	var plane, planegeo, planemat,planeBoundsMat, planeBounds;
-	var PLANEROTATE = 0;
-	var COLOR = 0;
-	var linematerial = null;
-	var start = Date.now();
-		var clock = new THREE.Clock();
-	var edges, cameraHelp;
-	
-	
-	
-	function init(){	
+	 cameraAngle = 0;
+	 orbitRange = 5;
+	 orbitSpeed = 2 * Math.PI/4;
+	 desiredAngle = 90 * Math.PI/180;
+	 var plane, planegeo, planemat,planeBoundsMat, planeBounds;
+	 PLANEROTATE = 0;
+	 COLOR = 0;
+	 linematerial = null;
+	 start = Date.now();
+		 clock = new THREE.Clock();
+	 var edges, cameraHelp;
+
+	var saveFileLocally = (function () {
+		var a = document.createElement("a");
+		document.body.appendChild(a);
+		a.style = "display: none";
+		return function (data, fileName) {
+			var json = JSON.stringify(data),
+				blob = new Blob([json], {type: "octet/stream"}),
+				url = window.URL.createObjectURL(blob);
+			a.href = url;
+			a.download = fileName;
+			a.click();
+			window.URL.revokeObjectURL(url);
+		};
+	}());
+
+	//tracks loading progress
+	var onProgress = function ( xhr ) {
+					if ( xhr.lengthComputable ) {
+						var percentComplete = xhr.loaded / xhr.total * 100;
+						console.log( Math.round(percentComplete, 2) + '% downloaded' );
+					}
+				};
+				
+	var onError = function ( xhr ) {
+	};
+	}());
+
+	 this.init=function(){	
 		container = document.createElement( 'div' );
 		container.style.position = 'absolute';
 		container.style.top = '30px';
@@ -86,7 +110,7 @@
 		camera.name="orig";
 
 
-
+		
 
 //TODO: what are these? what do they do?			   		   
 		sketchContainer = new THREE.Object3D();  //helpers etc that aren't included in raycasting
@@ -129,22 +153,7 @@
 //TODO: this seems important, what is this?
 		lastIntersectedPoint = new THREE.Vector3(0,0,0);		
 
-		//set up some basic function calls that occur on scpecific events
-		window.addEventListener('resize', onWindowResize, false);
-		document.addEventListener('mousedown', onSketchMouseDown, false);
-		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-		
-    
-		//basically call some functions when we see a click on an html element
-		document.getElementById('draw').onclick = toggleDrawMode;
-		document.getElementById('snapTo').onclick = snapTo;
-		document.getElementById('freehand').onclick = snapTo;
-		document.getElementById('exportLine').onclick = exportToObj;
-		document.getElementById('width').onchange = setCurrentLineWidth;
-		document.getElementById('grid').onclick = toggleGrid;
-		document.getElementById('toggleCameraPlaneLock').onchange=toggleCameraPlaneLock;
-		document.getElementById('rotateX').onclick = rotateX;
-;
+	
 		/*document.getElementById('show').onclick = printVerts;
 
 		
@@ -157,9 +166,7 @@
 				light.position.set( 1, 1, 1 ).normalize();
 				scene.add( light );
 			
-        //listen for keypresses, if we hear them, execute the callback function    
-        document.addEventListener( 'keydown', onVRDoodlerKeyDown, false );
-		document.addEventListener( 'keyup', onVRDoodlerKeyUp, false );
+
 		manager = new THREE.LoadingManager();
 				manager.onProgress = function ( item, loaded, total ) {
 				console.log( item, loaded, total );
@@ -183,26 +190,10 @@
  
 	//loadAnObject();
 	}
+
 	
-	
-	var saveFileLocally = (function () {
-		var a = document.createElement("a");
-		document.body.appendChild(a);
-		a.style = "display: none";
-		return function (data, fileName) {
-			var json = JSON.stringify(data),
-				blob = new Blob([json], {type: "octet/stream"}),
-				url = window.URL.createObjectURL(blob);
-			a.href = url;
-			a.download = fileName;
-			a.click();
-			window.URL.revokeObjectURL(url);
-		};
-	}());
 
-
-
-	function exportToObj ()
+	this.exportToObj =function()
 			{	
 				var exporter = new THREE.OBJExporter();
 				var result = exporter.parse(scene);  /*not exporting right?? only exports as mesh and buffer geometry*/
@@ -220,9 +211,7 @@
 				
 	}
 
-	//TODO: implement import option
-
-	function importScene(){
+	 this.importScene = function(){
 			/* something like this */
 			var loader = new THREE.OBJLoader( manager );
 				loader.load( '../test.obj', function ( object ) {
@@ -248,19 +237,9 @@
 			
 	}
 
-	//tracks loading progress
-	var onProgress = function ( xhr ) {
-					if ( xhr.lengthComputable ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( Math.round(percentComplete, 2) + '% downloaded' );
-					}
-				};
-				
-	var onError = function ( xhr ) {
-	};
+	
 
-	/*make it easier for user to draw on standard rotation*/
-	function rotateX(){
+	 this.rotateX=function(){
  		//planeBounds.rotation.y = 0;
  		//planeBounds.rotation.z = 0;
  		//controls.target = lastIntersectedPoint;
@@ -269,14 +248,14 @@
  		
 		
 	}
-	function rotateY(){
+	 this.rotateY=function(){
  		planeBounds.rotation.x = 0;
  		planeBounds.rotation.z = 0;
  		planeBounds.rotation.y += 90 * Math.PI / 180;
  		
 		
 	}
-	function rotateZ(){
+	 this.rotateZ=function(){
  		planeBounds.rotation.y = 0;
  		planeBounds.rotation.x = 0;
  		planeBounds.rotation.z += 90 * Math.PI / 180
@@ -284,7 +263,7 @@
 		
 	}
 	
-	function checkRotation(){
+	 this.checkRotation=function(){
 
 		var x = camera.position.x,
 			y = camera.position.y,
@@ -309,10 +288,9 @@
 		if (cameraAngle >360) cameraAngle = 0;
     
 } 
-
 	
 	
-	function rotateAroundWorldAxis( object, axis, radians ) {
+	 this.rotateAroundWorldAxis=function( object, axis, radians ) {
 
 		var rotationMatrix = new THREE.Matrix4();
 	
@@ -323,12 +301,12 @@
 	}
 	
 
-	function togglePlaneRotateLock(){
+	 this.togglePlaneRotateLock=function(){
 		PLANEROTATELOCK =PLANEROTATELOCK?0:1;	
 		 return PLANEROTATELOCK;
 	}
 	
-	function toggleCameraPlaneLock(e){
+	 this.toggleCameraPlaneLock=function(e){
 	
 	/* basically square the camera to be level to one axis or another 
 	and is parallel and/or perpendicular to x,y axes
@@ -376,26 +354,26 @@
 	
 	
 
-	function getCurrentLineWidth(){
+     var getCurrentLineWidth=function(){
 		return CURRENTLINEWIDTH;
 	}
 	
 	
 	/*will eventually offer black on white or white on black (default) */
-	function colorToggle(){
+	 this.colorToggle=function(){
 		//TODO need to change background color in tandem...
 		COLOR = COLOR?0:1;
 		return COLOR;
 	}
 	
 	/* not yet implemented */
-	function toggleInfoPanel(){
+	 this.toggleInfoPanel=function(){
 		//controls.stop();
 		bShowInfo = bShowInfo?0:1;
 		return bShowInfo;
 	}
 	
-	function toggleGrid(){
+	 this.toggleGrid=function(){
 	
 		if (grid){
 			grid.visible = grid.visible?false:true;
@@ -410,7 +388,7 @@
 	}
 
 
-	function setCurrentLineWidth(){
+	 this.setCurrentLineWidth=function(){
 
 	//controls.stop();
 		CURRENTLINEWIDTH = document.getElementById("width").value;
@@ -420,7 +398,7 @@
 	}
 	
 	//maybe plus/minus 2?
-	function toggleCurrentLineWidth(){
+	 this.toggleCurrentLineWidth=function(){
 		//controls.stop();
 		CURRENTLINEWIDTH = CURRENTLINEWIDTH--;
 			
@@ -428,7 +406,7 @@
 		return CURRENTLINEWIDTH;
 	}
 	
-	function changeControls(){
+	  var changeControls=function(){
 	 	var prevCamera = camera;
 
 		camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
@@ -458,7 +436,7 @@
 
 	}
 	
-	function snapTo(){
+	 this.snapTo=function(){
 	
 	if (SNAPMODE){
 		scene.remove(plane);
@@ -471,7 +449,7 @@
         	$('html,body').css('cursor','crosshair');
 	}
  		SNAPMODE = SNAPMODE?0:1;
- 		changeControls();
+ 		this.changeControls();
  		//if (SNAPMODE) plane.visible = true; else plane.visible = false;
  		$("#snapTo").prop("checked",SNAPMODE);
  		$("#infoPanel").text("Draw Mode is " + DRAWMODE + " Line Width is " + CURRENTLINEWIDTH + " Snap Mode is " + (SNAPMODE));
@@ -479,7 +457,7 @@
 	}
 	
 	
-	function snapPlanesToLocal(){
+	 this.snapPlanesToLocal=function(){
 	
 		var cameraclone = camera.clone();
 		cameraclone.position.y = 0;
@@ -498,7 +476,7 @@
 	}
 	
 /* if draw, mouse draws (snapping or not). if false, mouse moves camera */
-	function toggleDrawMode(mode){
+	  this.toggleDrawMode=(function(mode){
        
 		DRAWMODE = DRAWMODE?0:1;
 		 if (DRAWMODE)
@@ -512,19 +490,19 @@
 		$("#infoPanel").text("Draw Mode is " + DRAWMODE + " Line Width is " + CURRENTLINEWIDTH + " Snap Mode is " + (SNAPMODE));
 
     	return DRAWMODE;
-	}
+	})();
 	
 	
 	
 
-	function onWindowResize() {
+	 this.onWindowResize= function() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
 	}
 	
 	
-	function loadAnObject(){
+	 this.loadAnObject=function(){
 		var loader = new THREE.JSONLoader( manager );
 		var path = "assets/chairVert.json"; //callback needs real var I guess
 		var pos = new THREE.Vector3(0,0,10);
@@ -553,7 +531,7 @@
 
 
 
-	function onDocumentMouseMove( evt ) {
+	  this.onDocumentMouseMove = function( evt ) {
 
 		evt.preventDefault();
 		var mouseQuotient = evt.clientX / window.innerWidth;  //.0 to .9
@@ -574,7 +552,7 @@
 	
 	// Called whenever we see a keypress in our canvas. Cases are switched depending on the
 	// actual key pressed
-	function onVRDoodlerKeyDown(evt) {
+	 this.onVRDoodlerKeyDown=function(evt) {
 
                 switch (evt.keyCode) {
 
@@ -647,7 +625,7 @@
                
                 }
             }
-     function onVRDoodlerKeyUp(evt) {
+     this.onVRDoodlerKeyUp=function(evt) {
       		switch (evt.keyCode) {
       			case 16: //shift to erase last
                    	
@@ -660,7 +638,7 @@
      /* with camera position and the object with which we want to align our next line, transform
      where the projection thinks the mouse is to where we want it to be */
      
-	function transformMouseToDesiredPlaneOfInterest(mv, desiredPOI){
+	this.transformMouseToDesiredPlaneOfInterest=function(mv, desiredPOI){
 			var whichCamera;
 	
 			/* this locks the drawing to a particular camera.position in order to pinpoint drawing more accurately
@@ -703,7 +681,7 @@
 			
 
 /* if draw mode, add new vertex to line as mouse moves */
-    function onSketchMouseMove(evt) {
+     var onSketchMouseMove=function(evt) {
     
     	//var whatZ = .5;
         if(renderer) {
@@ -772,12 +750,12 @@
     }
     
     
-	function currentDrawnLine(){
+	 var currentDrawnLine=function(){
 		return drawnline[CURRENTspline];
 	}
 
 
-	function initDrawnLine(geometry, positions,mv){
+	 var initDrawnLine=function(geometry, positions,mv){
 		
 
 		if (!geometry){  //freehand or snap, doesn't matter, init the line
@@ -812,7 +790,7 @@
 	
 	}
 	
- function updateLineBuffer(newvec) {
+   var updateLineBuffer=function(newvec) {
 		if (currentDrawnLine()){
 		
 			//get array and update it with the new line vertices
@@ -833,7 +811,7 @@
 	}
 	
 	//called from mouseDown
-	function initNewLine(mouseVec, bUnproject, geo,positions){
+	  var initNewLine=function(mouseVec, bUnproject, geo,positions){
 	
 		CURRENTspline++;
 		
@@ -854,7 +832,7 @@
     
     /* after initing new line
     */
-    function onSketchMouseUp(evt) {
+     var onSketchMouseUp=function(evt) {
     	document.removeEventListener("mousemove",onSketchMouseMove,false);
   	
     	if (DRAWMODE){// && evt.target.nodeName == 'CANVAS'){
@@ -875,7 +853,7 @@
    
 	
     
-     function onSketchMouseDown(evt) {
+      this.onSketchMouseDown=function(evt) {
      
    		if(evt.which == 3) return;      	
     	if (evt.target.nodeName == 'CANVAS'){
@@ -919,11 +897,11 @@
     
     
 // animate
-	function printVerts(){		
+	 this.printVerts=function(){		
 		
 	}
 	
-	function getInverseViewMatrix()
+	 this.getInverseViewMatrix=function()
 {
 	var testMat = plane.matrix.clone();
     var inverseCamToSrc = new THREE.Matrix4().getInverse(camera.matrixWorld);
@@ -936,7 +914,7 @@
 /* the little plane indicates location and direction
    the outline plane is the canvas/plane on which to draw... I guess it could be a vertical grid
 */
-	function makeDirectionalPlane(material, vecPlane, name, planeObj){
+	 this.makeDirectionalPlane=function(material, vecPlane, name, planeObj){
 
 		 planeObj = new THREE.Mesh( planegeo, material );
 		 planeObj.position.set( 0, 0, 0 );
@@ -981,7 +959,7 @@
 		return planeObj;
 			}
 			
-	function makeCube( w,h,d){
+	 this.makeCube = function( w,h,d){
 		var mesh;
 		var planeGeo = new THREE.BoxGeometry(w,h,d);				
 		mesh = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({color:0x000fff, side:THREE.DoubleSide}));
@@ -1001,7 +979,7 @@
 	//shader code currently commented out...
 	//maybe be able to select line and make thicker or thinner (nice to have...)
 
-	function handleRayIntersections(intersects,drawingAtPlane){
+	 this.handleRayIntersections=function(intersects,drawingAtPlane){
 	console.log("mouse x and y seeking intersection " + mouse.x + " " + mouse.y);
 		if ( intersects.length > 0 ) {
 		
@@ -1059,11 +1037,7 @@
 	
 	}
 
-	function animate() {
-
-		requestAnimationFrame(animate);
-
-	
+	 this.animate=function(){
 		if (currentDrawnLine()) {//make sure initialized
 			currentDrawnLine().geometry.setDrawRange( 0, countVertices-1 );				
 		}
@@ -1093,16 +1067,10 @@
 		if (!DRAWMODE){
 			controls.update(clock.getDelta());
 		}
-		
-	
-	   } 
-	   
-	function render() {
+
+	   };
+
+	 var render=function() {
   			renderer.render( scene, camera );
 		}
-		
-	init();
-	//cameraHelp = new THREE.CameraHelper(camera);
-	//scene.add(cameraHelp);
-	animate();
-	
+}

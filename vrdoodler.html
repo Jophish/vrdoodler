@@ -92,12 +92,44 @@
 	<input id="trace" type="checkbox" value="trace" enabled="false"/>Trace
 	
 	<input id="colorToggle" type="checkbox" value="colorToggle" enabled="false"/>Color-->
-</div>
+</div>    
 <div id="infoPanel">
  <h3>Log:</h3>
    </div>
     <!--<a id="turnedoffinfoPanelTag" href="#menu" class="gradient-menu"></a>-->
     <br>
 <script src="VRDoodler.js"></script>
- 
+<script>
+//import {VRDoodler} from 'VRDoodler';
+function animate (doodle){
+	requestAnimationFrame(animate);
+	Doodler.animate();
+}
+//problem currently with using VRDoodler.animate() as a callback inside the global animate 
+//function, problem is in the scope of "this". Workaround currently by using Doodler as
+//a global var, ugly but works.
+
+Doodler = new VRDoodler();
+Doodler.init();
+//set up some basic function calls that occur on scpecific events
+		window.addEventListener('resize', Doodler.onWindowResize, false);
+		document.addEventListener('mousedown', Doodler.onSketchMouseDown, false);
+		document.addEventListener( 'mousemove', Doodler.onDocumentMouseMove, false );
+		
+    
+		//basically call some functions when we see a click on an html element
+		document.getElementById('draw').onclick = Doodler.toggleDrawMode;
+		document.getElementById('snapTo').onclick = Doodler.snapTo;
+		document.getElementById('freehand').onclick = Doodler.snapTo;
+		document.getElementById('exportLine').onclick = Doodler.exportToObj;
+		document.getElementById('width').onchange = Doodler.setCurrentLineWidth;
+		document.getElementById('grid').onclick = Doodler.toggleGrid;
+		document.getElementById('toggleCameraPlaneLock').onchange= Doodler.toggleCameraPlaneLock;
+		document.getElementById('rotateX').onclick = Doodler.rotateX;
+
+        //listen for keypresses, if we hear them, execute the callback function    
+        document.addEventListener( 'keydown', Doodler.onVRDoodlerKeyDown, false );
+		document.addEventListener( 'keyup', Doodler.onVRDoodlerKeyUp, false );
+animate();
+</script>
 </html>
