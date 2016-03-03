@@ -1,13 +1,13 @@
 
 VRDoodler = function() {
 
-	 constructor = ( function() {
-	 var camera, scene, renderer,orbitcamera,light;
+	 
+	 var camera, scene, renderer, orbitcamera, light;
      var geometry, material, mesh;
      var controls;
  	 context = null;
 	 currentPlane = 0;
-	 drawnline = [];
+	 var drawnline = [];
 	 var container, canvas;
 
 	 var manager;
@@ -18,7 +18,7 @@ VRDoodler = function() {
 	 var sketchContainer,objContainer ;
 	 CURRENTspline = -1; //incremented at initNewLine
 	 var raycaster, parentTransform, planeLockInd, lineLockInd, planeLockOutline, grid ;
-	 mouse = new THREE.Vector2();
+	 var mouse = new THREE.Vector2();
 	 var currentIntersected, currentIntersectedPoint, lastIntersected, lastIntersectedPoint;
 	 var currentMouseRay;
 	
@@ -28,7 +28,7 @@ VRDoodler = function() {
 	 ORBITMODE = 0;  //when not drawing
 	 FREEHANDMODE = 1;  //when drawing
 	 SNAPMODE = 0;		//snap to pre-existing line/objects	
-	 DRAWMODE = ORBITMODE;
+	 var DRAWMODE = ORBITMODE;
 	 CURRENTLINEWIDTH = 2;
 	 PLANEROTATELOCK = 0;
 	 CAMERAPLANELOCK = 0;
@@ -62,6 +62,7 @@ VRDoodler = function() {
 		};
 	}());
 
+
 	//tracks loading progress
 	var onProgress = function ( xhr ) {
 					if ( xhr.lengthComputable ) {
@@ -72,7 +73,6 @@ VRDoodler = function() {
 				
 	var onError = function ( xhr ) {
 	};
-	}());
 
 	 this.init=function(){	
 		container = document.createElement( 'div' );
@@ -248,14 +248,14 @@ VRDoodler = function() {
  		
 		
 	}
-	 this.rotateY=function(){
+	 var rotateY=function(){
  		planeBounds.rotation.x = 0;
  		planeBounds.rotation.z = 0;
  		planeBounds.rotation.y += 90 * Math.PI / 180;
  		
 		
 	}
-	 this.rotateZ=function(){
+	 var rotateZ=function(){
  		planeBounds.rotation.y = 0;
  		planeBounds.rotation.x = 0;
  		planeBounds.rotation.z += 90 * Math.PI / 180
@@ -263,7 +263,7 @@ VRDoodler = function() {
 		
 	}
 	
-	 this.checkRotation=function(){
+	 var checkRotation=function(){
 
 		var x = camera.position.x,
 			y = camera.position.y,
@@ -327,7 +327,7 @@ VRDoodler = function() {
 
 			CAMERAPLANELOCK = 1;
 			planeBounds = makeDirectionalPlane(planeBoundsMat, snapToThis, "bounds", planeBounds);
-			rotateX();
+			this.rotateX();
 			}
 		else if(value ==2){
 	
@@ -449,7 +449,7 @@ VRDoodler = function() {
         	$('html,body').css('cursor','crosshair');
 	}
  		SNAPMODE = SNAPMODE?0:1;
- 		this.changeControls();
+ 		changeControls();
  		//if (SNAPMODE) plane.visible = true; else plane.visible = false;
  		$("#snapTo").prop("checked",SNAPMODE);
  		$("#infoPanel").text("Draw Mode is " + DRAWMODE + " Line Width is " + CURRENTLINEWIDTH + " Snap Mode is " + (SNAPMODE));
@@ -476,7 +476,7 @@ VRDoodler = function() {
 	}
 	
 /* if draw, mouse draws (snapping or not). if false, mouse moves camera */
-	  this.toggleDrawMode=(function(mode){
+	  this.toggleDrawMode=function(mode){
        
 		DRAWMODE = DRAWMODE?0:1;
 		 if (DRAWMODE)
@@ -490,7 +490,7 @@ VRDoodler = function() {
 		$("#infoPanel").text("Draw Mode is " + DRAWMODE + " Line Width is " + CURRENTLINEWIDTH + " Snap Mode is " + (SNAPMODE));
 
     	return DRAWMODE;
-	})();
+	}
 	
 	
 	
@@ -557,7 +557,7 @@ VRDoodler = function() {
                 switch (evt.keyCode) {
 
                    case 68: //d draw mode
-                   		toggleDrawMode();
+                   		this.toggleDrawMode();
                    		
 		 					  	
                    break;
@@ -577,7 +577,7 @@ VRDoodler = function() {
 							
 						break;
                     case 83: //snap to s	
-						snapTo();
+						this.snapTo();
 						break;
 					/* case 80: //p audio
                     	if (CURRENTCOLLISION){
@@ -625,6 +625,7 @@ VRDoodler = function() {
                
                 }
             }
+
      this.onVRDoodlerKeyUp=function(evt) {
       		switch (evt.keyCode) {
       			case 16: //shift to erase last
@@ -638,7 +639,7 @@ VRDoodler = function() {
      /* with camera position and the object with which we want to align our next line, transform
      where the projection thinks the mouse is to where we want it to be */
      
-	this.transformMouseToDesiredPlaneOfInterest=function(mv, desiredPOI){
+	var transformMouseToDesiredPlaneOfInterest=function(mv, desiredPOI){
 			var whichCamera;
 	
 			/* this locks the drawing to a particular camera.position in order to pinpoint drawing more accurately
@@ -914,7 +915,7 @@ VRDoodler = function() {
 /* the little plane indicates location and direction
    the outline plane is the canvas/plane on which to draw... I guess it could be a vertical grid
 */
-	 this.makeDirectionalPlane=function(material, vecPlane, name, planeObj){
+	 var makeDirectionalPlane=function(material, vecPlane, name, planeObj){
 
 		 planeObj = new THREE.Mesh( planegeo, material );
 		 planeObj.position.set( 0, 0, 0 );
@@ -979,7 +980,7 @@ VRDoodler = function() {
 	//shader code currently commented out...
 	//maybe be able to select line and make thicker or thinner (nice to have...)
 
-	 this.handleRayIntersections=function(intersects,drawingAtPlane){
+	 var handleRayIntersections=function(intersects,drawingAtPlane){
 	console.log("mouse x and y seeking intersection " + mouse.x + " " + mouse.y);
 		if ( intersects.length > 0 ) {
 		

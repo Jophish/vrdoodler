@@ -101,35 +101,36 @@
 <script src="VRDoodler.js"></script>
 <script>
 //import {VRDoodler} from 'VRDoodler';
-function animate (doodle){
+function animate (){
 	requestAnimationFrame(animate);
-	Doodler.animate();
+	Doodler.animate.bind(Doodler)();
 }
 //problem currently with using VRDoodler.animate() as a callback inside the global animate 
 //function, problem is in the scope of "this". Workaround currently by using Doodler as
 //a global var, ugly but works.
 
-Doodler = new VRDoodler();
+var Doodler = new VRDoodler();
 Doodler.init();
+
 //set up some basic function calls that occur on scpecific events
-		window.addEventListener('resize', Doodler.onWindowResize, false);
-		document.addEventListener('mousedown', Doodler.onSketchMouseDown, false);
-		document.addEventListener( 'mousemove', Doodler.onDocumentMouseMove, false );
+		window.addEventListener('resize', Doodler.onWindowResize.bind(Doodler), false);
+		document.addEventListener('mousedown', Doodler.onSketchMouseDown.bind(Doodler), false);
+		document.addEventListener( 'mousemove', Doodler.onDocumentMouseMove.bind(Doodler), false );
 		
     
 		//basically call some functions when we see a click on an html element
-		document.getElementById('draw').onclick = Doodler.toggleDrawMode;
-		document.getElementById('snapTo').onclick = Doodler.snapTo;
-		document.getElementById('freehand').onclick = Doodler.snapTo;
-		document.getElementById('exportLine').onclick = Doodler.exportToObj;
-		document.getElementById('width').onchange = Doodler.setCurrentLineWidth;
-		document.getElementById('grid').onclick = Doodler.toggleGrid;
-		document.getElementById('toggleCameraPlaneLock').onchange= Doodler.toggleCameraPlaneLock;
-		document.getElementById('rotateX').onclick = Doodler.rotateX;
+		document.getElementById('draw').onclick = Doodler.toggleDrawMode.bind(Doodler);
+		document.getElementById('snapTo').onclick = Doodler.snapTo.bind(Doodler);
+		document.getElementById('freehand').onclick = Doodler.snapTo.bind(Doodler);
+		document.getElementById('exportLine').onclick = Doodler.exportToObj.bind(Doodler);
+		document.getElementById('width').onchange = Doodler.setCurrentLineWidth.bind(Doodler);
+		document.getElementById('grid').onclick = Doodler.toggleGrid.bind(Doodler);
+		document.getElementById('toggleCameraPlaneLock').onchange= Doodler.toggleCameraPlaneLock.bind(Doodler);
+		document.getElementById('rotateX').onclick = Doodler.rotateX.bind(Doodler);
 
         //listen for keypresses, if we hear them, execute the callback function    
-        document.addEventListener( 'keydown', Doodler.onVRDoodlerKeyDown, false );
-		document.addEventListener( 'keyup', Doodler.onVRDoodlerKeyUp, false );
+        document.addEventListener( 'keydown', Doodler.onVRDoodlerKeyDown.bind(Doodler), false );
+		document.addEventListener( 'keyup', Doodler.onVRDoodlerKeyUp.bind(Doodler), false );
 animate();
 </script>
 </html>
