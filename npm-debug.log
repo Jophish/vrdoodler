@@ -1,70 +1,17 @@
 0 info it worked if it ends with ok
-1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'filesys' ]
-2 info using npm@1.4.3
-3 info using node@v0.10.26
-4 warn package.json http@0.0.0 http is also the name of a node core module.
-5 warn package.json http@0.0.0 No description
-6 warn package.json http@0.0.0 No repository field.
-7 warn package.json path@0.12.7 path is also the name of a node core module.
-8 warn package.json php@0.0.1 'repositories' (plural) Not supported. Please pick one as the 'repository' field
-9 warn package.json url@0.11.0 url is also the name of a node core module.
-10 verbose cache add [ 'filesys', null ]
-11 verbose cache add name=undefined spec="filesys" args=["filesys",null]
-12 verbose parsed url { protocol: null,
-12 verbose parsed url   slashes: null,
-12 verbose parsed url   auth: null,
-12 verbose parsed url   host: null,
-12 verbose parsed url   port: null,
-12 verbose parsed url   hostname: null,
-12 verbose parsed url   hash: null,
-12 verbose parsed url   search: null,
-12 verbose parsed url   query: null,
-12 verbose parsed url   pathname: 'filesys',
-12 verbose parsed url   path: 'filesys',
-12 verbose parsed url   href: 'filesys' }
-13 silly lockFile ddc0dc37-filesys filesys
-14 verbose lock filesys /Users/csbishop/.npm/ddc0dc37-filesys.lock
-15 silly lockFile ddc0dc37-filesys filesys
-16 silly lockFile ddc0dc37-filesys filesys
-17 verbose addNamed [ 'filesys', '' ]
-18 verbose addNamed [ null, '*' ]
-19 silly lockFile d7ec5809-filesys filesys@
-20 verbose lock filesys@ /Users/csbishop/.npm/d7ec5809-filesys.lock
-21 silly addNameRange { name: 'filesys', range: '*', hasData: false }
-22 verbose url raw filesys
-23 verbose url resolving [ 'https://registry.npmjs.org/', './filesys' ]
-24 verbose url resolved https://registry.npmjs.org/filesys
-25 info trying registry request attempt 1 at 19:16:29
-26 http GET https://registry.npmjs.org/filesys
-27 http 404 https://registry.npmjs.org/filesys
-28 silly registry.get cb [ 404,
-28 silly registry.get   { 'content-type': 'application/json',
-28 silly registry.get     'cache-control': 'max-age=0',
-28 silly registry.get     'content-length': '2',
-28 silly registry.get     'accept-ranges': 'bytes',
-28 silly registry.get     date: 'Sat, 20 Feb 2016 00:16:29 GMT',
-28 silly registry.get     via: '1.1 varnish',
-28 silly registry.get     age: '0',
-28 silly registry.get     connection: 'keep-alive',
-28 silly registry.get     'x-served-by': 'cache-jfk1025-JFK',
-28 silly registry.get     'x-cache': 'MISS',
-28 silly registry.get     'x-cache-hits': '0',
-28 silly registry.get     'x-timer': 'S1455927389.355150,VS0,VE28' } ]
-29 silly addNameRange number 2 { name: 'filesys', range: '*', hasData: true }
-30 silly addNameRange versions [ undefined, [] ]
-31 error TypeError: Cannot read property 'latest' of undefined
-31 error     at next (/usr/local/lib/node_modules/npm/lib/cache.js:744:35)
-31 error     at /usr/local/lib/node_modules/npm/lib/cache.js:732:5
-31 error     at saved (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/get.js:148:7)
-31 error     at /usr/local/lib/node_modules/npm/node_modules/graceful-fs/polyfills.js:133:7
-31 error     at Object.oncomplete (fs.js:107:15)
-32 error If you need help, you may report this *entire* log,
-32 error including the npm and node versions, at:
-32 error     <http://github.com/npm/npm/issues>
-33 error System Darwin 12.6.0
-34 error command "node" "/usr/local/bin/npm" "install" "filesys"
-35 error cwd /Users/csbishop/Sites/360/vrdoodler
-36 error node -v v0.10.26
-37 error npm -v 1.4.3
-38 error type non_object_property_load
-39 verbose exit [ 1, true ]
+1 verbose cli [ '/usr/bin/nodejs', '/usr/bin/npm', 'install' ]
+2 info using npm@1.4.21
+3 info using node@v0.10.29
+4 error install Couldn't read dependencies
+5 error package.json ENOENT, open '/home/joe/Documents/vrdoodler/package.json'
+5 error package.json This is most likely not a problem with npm itself.
+5 error package.json npm can't find a package.json file in your current directory.
+6 error System Linux 3.16.0-4-amd64
+7 error command "/usr/bin/nodejs" "/usr/bin/npm" "install"
+8 error cwd /home/joe/Documents/vrdoodler
+9 error node -v v0.10.29
+10 error npm -v 1.4.21
+11 error path /home/joe/Documents/vrdoodler/package.json
+12 error code ENOPACKAGEJSON
+13 error errno 34
+14 verbose exit [ 34, true ]
